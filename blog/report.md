@@ -103,8 +103,9 @@ blog/
 перед запуском добавить в корень проекта файл .env
 
 ```text
-WT_SECRET='your_jwt_secret' // ваш jwt_secret
+JWT_SECRET='your_jwt_secret' // ваш jwt_secret
 ```
+установить PostgresQL и создать учётную запись. Пример пользователя можно взять из файла DBconnect.js
 
 Запуск сервера
 В директории server выполните:
@@ -272,3 +273,44 @@ npm start
    - Пагинация и сортировка постов.
 3. **Расширение функционала**:
    - Загрузка изображений.
+---
+
+## Пример стартового окна приложения после запуска клиентской и серверной части 
+![image](https://github.com/user-attachments/assets/2c6a09e2-3445-4b2c-8fd6-6becd7774ce7)
+
+## Компонент Login.js
+![image](https://github.com/user-attachments/assets/dd24489a-4fca-4fbd-9c1a-cdb09ca38cca)
+
+## Компонент Register.js
+![image](https://github.com/user-attachments/assets/65edc279-7a13-4824-8afc-84430c8f51a2)
+
+## Функционал приветсвия пользователя после логина или регистрации
+![image](https://github.com/user-attachments/assets/ee1c4af1-b816-49cd-8ef1-40f9e89eb58f)
+
+![image](https://github.com/user-attachments/assets/78d63247-7915-4596-8e46-49f814f96d9c)
+
+## Компонент PostDetail.js  
+![image](https://github.com/user-attachments/assets/6514c044-6485-4c71-96bd-40df0c78ddf0)
+
+## Кнопка подписки и отписки  
+![image](https://github.com/user-attachments/assets/3548aba4-ef75-4301-9901-d8683c6c2656)
+
+![image](https://github.com/user-attachments/assets/4a34d8f7-a84b-42d8-a0ce-e60b2895d186)
+
+## Если пользователь является владельцем поста, то появляются кнопки редактирования и удаления  
+![image](https://github.com/user-attachments/assets/4b6aef04-d809-413a-8a1b-78a056c1e9ad)
+
+## Компонент создания поста
+![image](https://github.com/user-attachments/assets/2e2dfddd-4e76-4d73-bf97-994b97d612d2)
+
+## Приватность поста выставляется при его создании  
+![image](https://github.com/user-attachments/assets/7bd0506a-8c6d-4298-8b08-fa4d8b627952)
+
+## Форма редактирования поста
+![image](https://github.com/user-attachments/assets/2d6cbba5-aebc-4224-9abf-b9382bc88551)
+
+## Кнопка переключения списка постов с публичных на приватные (только по подписке)
+![image](https://github.com/user-attachments/assets/67681211-a65d-42cb-ab71-35623d1d9df4)
+
+## Подтверждение удаления поста
+![image](https://github.com/user-attachments/assets/57d51730-8501-4ba4-b1be-8e2eddb721b4)
