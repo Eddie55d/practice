@@ -351,17 +351,30 @@ JOIN travels t ON p.travel_id = t.id;
 ## Графическое представление функционала компонентов
 
 ### Главная страница
+![image](https://github.com/user-attachments/assets/3cd2e62c-60a4-45be-8ac2-d6b9a4f56079)
 
 ### Регистрация пользователя
+![image](https://github.com/user-attachments/assets/12201a6e-771e-466e-911c-236103ab3eb4)
 
 ### Логин
+![image](https://github.com/user-attachments/assets/7baaaadb-c567-4b24-921f-4168b9c3985b)
 
 ### Отображение авторизованного пользователя
+![image](https://github.com/user-attachments/assets/bbcfb6a4-15e4-4802-8df8-ac34363020a1)
 
 ### Детали путешествия с отображением мест
+![image](https://github.com/user-attachments/assets/ada1e056-8adf-4df7-ba80-f5aa934ad2c2)
 
 ### Создание путешествия
+![image](https://github.com/user-attachments/assets/e6e3e1f7-46f8-4f68-b7d6-47cb677162bb)
 
 ### Добавление мест
+![image](https://github.com/user-attachments/assets/d2bba022-e6b7-42ee-984a-427f79b6a462)
+![image](https://github.com/user-attachments/assets/4d3bd0f7-3333-4f17-a12b-5d74166aab80)
+![image](https://github.com/user-attachments/assets/346b90a4-c63e-4ae6-be2c-b0287aeecf46)
+
 
 ### Страница путешествий пользователя
+![image](https://github.com/user-attachments/assets/db40b2ed-d73e-41f4-9550-42df4f5d5fb0)
+
+
