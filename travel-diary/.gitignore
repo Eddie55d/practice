@@ -2,8 +2,8 @@
 /node_modules/
 /server/node_modules
 /client/node_modules
-server/package-lock
-client/package-lock
+/server/package-lock
+/client/package-lock
 
 /server/.env
 /.pnp
