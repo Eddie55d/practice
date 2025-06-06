@@ -7,44 +7,52 @@ async function initializeDatabase() {
 
     // Создаем таблицы, если они еще не существуют
     await client.query(`
-            CREATE TABLE IF NOT EXISTS users (
-                id SERIAL PRIMARY KEY,
-                username VARCHAR(50) UNIQUE NOT NULL,
-                email VARCHAR(100) UNIQUE NOT NULL,
-                password VARCHAR(100) NOT NULL
-            );
-        `);
+      CREATE TABLE IF NOT EXISTS users (
+        id SERIAL PRIMARY KEY,
+        username VARCHAR(50) UNIQUE NOT NULL,
+        email VARCHAR(100) UNIQUE NOT NULL,
+        password VARCHAR(100) NOT NULL
+      );
+    `);
 
     await client.query(`
-            CREATE TABLE IF NOT EXISTS travels (
-                id SERIAL PRIMARY KEY,
-                title VARCHAR(100) NOT NULL,
-                description TEXT,
-                location GEOGRAPHY(POINT, 4326),
-                cost DECIMAL(10, 2),
-                user_id INTEGER REFERENCES users(id)
-            );
-        `);
+      CREATE TABLE IF NOT EXISTS travels (
+        id SERIAL PRIMARY KEY,
+        title VARCHAR(100) NOT NULL,
+        description TEXT,
+        location GEOGRAPHY(POINT, 4326),
+        cost DECIMAL(10, 2),
+        user_id INTEGER REFERENCES users(id)
+      );
+    `);
 
     await client.query(`
-            CREATE TABLE IF NOT EXISTS places_to_visit (
-                id SERIAL PRIMARY KEY,
-                travel_id INTEGER REFERENCES travels(id),
-                name VARCHAR(100) NOT NULL,
-                description TEXT,
-                is_visited BOOLEAN DEFAULT FALSE,
-                location GEOGRAPHY(POINT, 4326)
-            );
-        `);
+      CREATE TABLE IF NOT EXISTS places_to_visit (
+        id SERIAL PRIMARY KEY,
+        travel_id INTEGER REFERENCES travels(id),
+        name VARCHAR(100) NOT NULL,
+        description TEXT,
+        is_visited BOOLEAN DEFAULT FALSE,
+        location GEOGRAPHY(POINT, 4326)
+      );
+    `);
 
-    // Добавляем пользователей
+    // Проверяем, есть ли уже тестовые данные
+    const usersCount = await client.query("SELECT COUNT(*) FROM users");
+    if (usersCount.rows[0].count > 0) {
+      console.log("Test data already exists, skipping initialization");
+      await client.query("COMMIT");
+      return;
+    }
+
+    // Добавляем пользователей (только если таблица пустая)
     await client.query(`
-            INSERT INTO users (username, email, password) 
-            VALUES 
-                ('ivanov', 'ivanov@example.com', 'password123'),
-                ('petrova', 'petrova@example.com', 'qwerty456')
-            ON CONFLICT DO NOTHING;
-        `);
+      INSERT INTO users (username, email, password) 
+      VALUES 
+        ('ivanov', 'ivanov@example.com', 'password123'),
+        ('petrova', 'petrova@example.com', 'qwerty456')
+      ON CONFLICT DO NOTHING;
+    `);
 
     // Получаем ID пользователей
     const users = await client.query("SELECT id, username FROM users");
@@ -81,22 +89,23 @@ async function initializeDatabase() {
     const travelIds = {};
     for (const travel of travelsQueries) {
       const result = await client.query(`
-                INSERT INTO travels (title, description, location, cost, user_id) 
-                VALUES (
-                    '${travel.title}',
-                    '${travel.description}',
-                    ${travel.location},
-                    ${travel.cost},
-                    ${travel.user_id}
-                )
-                RETURNING id;
-            `);
-      travelIds[travel.title] = result.rows[0].id;
+        INSERT INTO travels (title, description, location, cost, user_id) 
+        VALUES (
+          '${travel.title}',
+          '${travel.description}',
+          ${travel.location},
+          ${travel.cost},
+          ${travel.user_id}
+        )
+        ON CONFLICT DO NOTHING
+        RETURNING id;
+      `);
+      if (result.rows.length > 0) {
+        travelIds[travel.title] = result.rows[0].id;
+      }
     }
 
     // Добавляем места для посещения
-    // Продолжение предыдущего кода
-
     const placesQueries = [
       {
         travel_id: travelIds["Отдых в Сочи"],
@@ -110,13 +119,13 @@ async function initializeDatabase() {
           {
             name: "Роза Хутор",
             description: "Горнолыжный курорт",
-            is_visited: false,
+            is_visited: true,
             location: "ST_SetSRID(ST_MakePoint(40.2949, 43.6725), 4326)",
           },
           {
             name: "Дендрарий",
             description: "Парк с экзотическими растениями",
-            is_visited: false,
+            is_visited: true,
             location: "ST_SetSRID(ST_MakePoint(39.7464, 43.5622), 4326)",
           },
         ],
@@ -150,7 +159,7 @@ async function initializeDatabase() {
           {
             name: "Суздаль",
             description: "Город-музей под открытым небом",
-            is_visited: false,
+            is_visited: true,
             location: "ST_SetSRID(ST_MakePoint(40.4439, 56.4277), 4326)",
           },
           {
@@ -171,17 +180,20 @@ async function initializeDatabase() {
 
     // Добавляем места для посещения
     for (const { travel_id, places } of placesQueries) {
+      if (!travel_id) continue; // Пропускаем если travel_id не определен
+      
       for (const place of places) {
         await client.query(`
-        INSERT INTO places_to_visit (travel_id, name, description, is_visited, location) 
-        VALUES (
-          ${travel_id},
-          '${place.name}',
-          '${place.description}',
-          ${place.is_visited},
-          ${place.location}
-        );
-      `);
+          INSERT INTO places_to_visit (travel_id, name, description, is_visited, location) 
+          VALUES (
+            ${travel_id},
+            '${place.name}',
+            '${place.description}',
+            ${place.is_visited},
+            ${place.location}
+          )
+          ON CONFLICT DO NOTHING;
+        `);
       }
     }
 
