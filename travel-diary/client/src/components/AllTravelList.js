@@ -8,6 +8,7 @@ import {
 } from 'react-bootstrap';
 import TravelCard from './TravelCard';
 import TravelDetails from './TravelDetails';
+import '../index.css'
 
 export default function AllTravelList() {
   const [travels, setTravels] = useState([]);
@@ -20,6 +21,7 @@ export default function AllTravelList() {
     const fetchTravels = async () => {
     try {
     const response = await fetch('http://localhost:5000/api/travels');
+  
     if (!response.ok) {
     throw new Error('Network response was not ok');
     }

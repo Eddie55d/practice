@@ -76,7 +76,7 @@ const TravelDetails = ({ show, travel, onClose }) => {
                           <YMaps>
                             <Map
                               defaultState={{
-                                center: [place.lat || 0, place.lng || 0],
+                                center: [place.lat, place.lng],
                                 zoom: 14,
                               }}
                               width="100%"

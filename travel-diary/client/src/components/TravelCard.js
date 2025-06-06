@@ -4,12 +4,28 @@ import {
   CardTitle, 
   CardText, 
   Badge, 
-  Button
+  Button,
+  Spinner
 } from 'react-bootstrap';
 import { YMaps, Map, Placemark } from '@pbe/react-yandex-maps';
+import { useState, useEffect } from 'react';
 
 export default function TravelCard({ travel, onTravelClick }) {
   const hasCoordinates = travel.lat && travel.lng;
+  const [mapLoaded, setMapLoaded] = useState(false);
+
+  useEffect(() => {
+    let timeoutId;
+    
+    if (!mapLoaded) {
+      timeoutId = setTimeout(() => {
+        setMapLoaded(true); 
+      }, 2000);
+    }
+  
+    return () => clearTimeout(timeoutId);
+  }, [mapLoaded]);
+  
 
   return (
     <Card className="mb-3">
@@ -51,27 +67,38 @@ export default function TravelCard({ travel, onTravelClick }) {
 
         {hasCoordinates && (
           <div style={{ height: '250px', width: '100%' }}>
-            <YMaps>
-              <Map
-                defaultState={{
-                  center: [travel.lat, travel.lng],
-                  zoom: 13,
-                }}
-                width="100%"
-                height="100%"
-              >
-                <Placemark 
-                  geometry={[travel.lat, travel.lng]}
-                  properties={{
-                    balloonContent: travel.title,
+            <YMaps
+              query={{ apikey: 'AIzaSyC4FEJpTBXLyQ9K-aUi0zJ_b6kT5uW_7iE' }}
+              onload={() => setMapLoaded(true)}
+              onunload={() => setMapLoaded(false)}
+            >
+              {mapLoaded ? (
+                <Map
+                  defaultState={{
+                    center: [travel.lat, travel.lng],
+                    zoom: 10
                   }}
-                  options={{
-                    iconLayout: 'default#image',
-                    iconImageSize: [30, 30],
-                    iconImageOffset: [-15, -15]
-                  }}
-                />
-              </Map>
+                  width="100%"
+                  height="100%"
+                >
+                  <Placemark 
+                    geometry={[travel.lat, travel.lng]}
+                    properties={{
+                      balloonContent: travel.title
+                    }}
+                    options={{
+                      preset: 'islands#dotIcon',
+                      iconColor: '#FF0000'
+                    }}
+                  />
+                </Map>
+              ) : (
+                <div className="text-center">
+                  <Spinner animation="border" role="status">
+                    <span className="visually-hidden">Загрузка карты...</span>
+                  </Spinner>
+                </div>
+              )}
             </YMaps>
           </div>
         )}
